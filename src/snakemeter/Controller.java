@@ -40,6 +40,13 @@ public class Controller implements ActionListener, MouseInputListener {
     public void init() {
         enableButtons(false);
         imagePanel.points = points;
+        
+        
+        boolean newerVersion = new VersionCheck().checkForNewerVersion();
+        if (newerVersion) {
+            window.addNewerVersionHint();
+        }
+        
     }
 
 //In response to a button click:
@@ -175,7 +182,7 @@ public class Controller implements ActionListener, MouseInputListener {
             last = point;
         }
 
-        window.result.setText("" + lenghtPx / lenghtScale * scale);
+        window.result.setText("" + lenghtPx / lenghtScale * scale+" cm");
 
     }
 
