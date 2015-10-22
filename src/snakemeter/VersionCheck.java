@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
  */
 public class VersionCheck {
 
-    public static final String CURRENT_VERSION = "0.1";
+    public static final String CURRENT_VERSION = "0.2";
 
     public static final String VERSION_PATH = "https://raw.githubusercontent.com/ybroeker/SnakeMeter/master/version";
 

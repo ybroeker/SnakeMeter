@@ -27,30 +27,26 @@ public class Controller implements ActionListener, MouseInputListener {
 
     public static final int MODE_NONE = 0, MODE_SCALE = 1, MODE_MESS = 2;
     private int mode = MODE_NONE;
-    BufferedImage image;
+    
     JFileChooser fc;
 
-    LinkedList<Point> points = new LinkedList<>();
-
-    Point point1;
-    Point point2;
-
-    float scale = 1;
+    Model model;
 
     public void init() {
         enableButtons(false);
-        imagePanel.points = points;
-        
-        
+        imagePanel.setModel(model);
+
         boolean newerVersion = new VersionCheck().checkForNewerVersion();
         if (newerVersion) {
             window.addNewerVersionHint();
         }
-        
+
     }
 
 //In response to a button click:
     public Controller() {
+        model = new Model();
+
         fc = new JFileChooser();
         fc.addChoosableFileFilter(new ImageFilter());
 
@@ -67,10 +63,11 @@ public class Controller implements ActionListener, MouseInputListener {
                 File file = fc.getSelectedFile();
 
                 try {
-                    image = ImageIO.read(file);
-                    window.setImage(image);
+                    BufferedImage image = ImageIO.read(file);
+                    model.setImage(image);
                     enableButtons(true);
-                    points.clear();
+                    model.reset();
+                    window.getImagePanel().lastDimension=null;
 
                 } catch (IOException ex) {
                     Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
@@ -85,9 +82,24 @@ public class Controller implements ActionListener, MouseInputListener {
         } else if (e.getSource() == (window.getMessButton())) {
             mode = MODE_MESS;
             window.getMassButton().setSelected(false);
+            
         } else if (e.getSource() == (window.getInputField())) {
-            calculate();
+            parseInput(window.getInputField().getText());
+            window.result.setText("" + model.calculate() + " cm");
+        } else  if (e.getSource() == window.getUndo()) {
+            model.undo();
+            imagePanel.repaint();
+            window.result.setText("" + model.calculate() + " cm");
+        } else if (e.getSource() == window.getRedo()) {
+            model.redo();
+            imagePanel.repaint();
+            window.result.setText("" + model.calculate() + " cm");
+        } else if (e.getSource() == window.getReset()) {
+            model.reset();
+            imagePanel.repaint();
+            window.result.setText("" + 0 + " cm");
         }
+        
     }
 
     public Window getWindow() {
@@ -106,31 +118,22 @@ public class Controller implements ActionListener, MouseInputListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
         if (SwingUtilities.isRightMouseButton(e)) {
             mode = MODE_NONE;
             window.getMassButton().setSelected(false);
             window.getMessButton().setSelected(false);
-        }
+            imagePanel.curserPoint=null;
+            imagePanel.curserScalePoint=null;
+        } else if (mode == MODE_SCALE) {
 
-        if (mode == MODE_SCALE) {
-
-            if (point1 == null) {
-                point1 = e.getPoint();
-            } else {
-                if (point2 != null) {
-                    point1 = point2;
-                }
-                point2 = e.getPoint();
-            }
-            imagePanel.point2 = point2;
-            imagePanel.point1 = point1;
+           model.addScalePoint(e.getPoint());
 
         } else if (mode == MODE_MESS) {
-            points.add(e.getPoint());
+            model.addPoint(e.getPoint());
         }
         imagePanel.repaint();
-        calculate();
+        parseInput(window.getInputField().getText());
+        window.result.setText("" + model.calculate() + " cm");
     }
 
     @Override
@@ -150,7 +153,9 @@ public class Controller implements ActionListener, MouseInputListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        imagePanel.curserPoint=null;
+            imagePanel.curserScalePoint=null;
+            imagePanel.repaint();
     }
 
     public ImagePanel getImagePanel() {
@@ -162,28 +167,10 @@ public class Controller implements ActionListener, MouseInputListener {
     }
 
     private void parseInput(String text) {
-        scale = Float.parseFloat(text);
-    }
-
-    private void calculate() {
-        parseInput(window.getInputField().getText());
-
-        Point last = null;
-        float lenghtPx = 0;
-        float lenghtScale = 0;
-        if (point1 != null && point2 != null) {
-            lenghtScale += Point.distance(point1.x, point1.y, point2.x, point2.y);
+        float input = Float.parseFloat(text);
+        if (input != Float.NaN) {
+            model.setScale(Float.parseFloat(text));
         }
-
-        for (Point point : points) {
-            if (last != null) {
-                lenghtPx += Point.distance(last.x, last.y, point.x, point.y);
-            }
-            last = point;
-        }
-
-        window.result.setText("" + lenghtPx / lenghtScale * scale+" cm");
-
     }
 
     @Override
@@ -195,16 +182,16 @@ public class Controller implements ActionListener, MouseInputListener {
     public void mouseMoved(MouseEvent e) {
 
         if (mode == MODE_SCALE) {
-            imagePanel.pointDragScale = e.getPoint();
-            imagePanel.pointDrag = null;
+            imagePanel.curserScalePoint = e.getPoint();
+            imagePanel.curserPoint = null;
 
         } else if (mode == MODE_MESS) {
-            imagePanel.pointDrag = e.getPoint();
-            imagePanel.pointDragScale = null;
+            imagePanel.curserPoint = e.getPoint();
+            imagePanel.curserScalePoint = null;
 
         } else {
-            imagePanel.pointDragScale = null;
-            imagePanel.pointDrag = null;
+            imagePanel.curserScalePoint = null;
+            imagePanel.curserPoint = null;
 
         }
         imagePanel.repaint();

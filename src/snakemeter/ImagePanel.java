@@ -3,8 +3,13 @@ package snakemeter;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.geom.CubicCurve2D;
+import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import javax.swing.JPanel;
@@ -15,110 +20,105 @@ import javax.swing.JPanel;
  */
 public class ImagePanel extends JPanel {
 
-    BufferedImage image;
-
     BufferedImage resized;
 
-    LinkedList<Point> points;
-
-    Point point1;
-    Point point2;
-    
-    Point pointDrag;
-    Point pointDragScale;
+    Point curserPoint;
+    Point curserScalePoint;
 
     Dimension lastDimension;
     float lastScale = 0;
-    
+    private Model model;
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
-        if (image != null) {
 
-            if (lastDimension == null || this.getWidth() != lastDimension.getWidth() || this.getHeight() != lastDimension.getHeight()) {
-                
-                
-                resized = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+        if (model.getImage() != null) {
 
-                float scaleX = (float) this.getWidth() / (float) image.getWidth();
-                float scaleY = (float) this.getHeight() / (float) image.getHeight();
-
-                float scale = scaleX < scaleY ? scaleX : scaleY;
-
-                Image tmp = image.getScaledInstance((int) (image.getWidth() * scale), (int) (image.getHeight() * scale), Image.SCALE_SMOOTH);
-                resized.getGraphics().drawImage(tmp, 0, 0, null);
-
-                if (lastScale!=0) {
-                    if (point1!=null) {
-                        point1.setLocation((float)point1.x/lastScale*scale, (float)point1.y/lastScale*scale);
-                    }
-                    if (point2!=null) {
-                        point2.setLocation((float)point2.x/lastScale*scale, (float)point2.y/lastScale*scale);
-                    }
-                    for (Point point : points) {
-                        point.setLocation((float)point.x/lastScale*scale, (float)point.y/lastScale*scale);
-                    }
-                }                
-                
-                lastDimension = new Dimension(this.getWidth(), this.getHeight());
-                lastScale=scale;
-            }
+            createAndResizeImage();
 
             g.drawImage(resized, 0, 0, null); // see javadoc for more info on the parameters     
 
-            g.setColor(Color.red);
-            if (point1 != null) {
-                g.fillRect(point1.x - 1, point1.y - 1, 3, 3);
-            }
-            if (point2 != null) {
-                g.fillRect(point2.x - 1, point2.y - 1, 3, 3);
-                g.drawLine(point1.x, point1.y, point2.x, point2.y);
-            }
-            if (pointDragScale!=null) {
-                g.fillRect(pointDragScale.x - 1, pointDragScale.y - 1, 3, 3);
-                if (point1!=null) {
-                    g.drawLine(point1.x, point1.y, pointDragScale.x, pointDragScale.y);
-   
-                }
-            }
-            
-            
+            drawScalePoints((Graphics2D) g);
 
-            g.setColor(Color.green);
-            Point last = null;
-            if (points != null) {
-                for (Point point : points) {
+            drawPoints((Graphics2D) g);
 
-                    g.fillRect(point.x - 1, point.y - 1, 3, 3);
+        }
 
-                    if (last != null) {
-                        g.drawLine(point.x, point.y, last.x, last.y);
-                    }
+    }
 
-                    last = point;
-                }
+    public void setModel(Model model) {
+        this.model = model;
+    }
+
+    private void drawPoints(Graphics2D graphics) {
+        graphics.setColor(Color.green);
+
+        if (curserPoint != null) {
+            graphics.fillRect(curserPoint.x - 1, curserPoint.y - 1, 3, 3);
+        }
+
+        if (!model.getPoints().isEmpty()) {
+            for (Point point : model.getPoints()) {
+                graphics.fillRect(point.x - 1, point.y - 1, 3, 3);
             }
-            
-            if (pointDrag!=null) {
-                g.fillRect(pointDrag.x - 1, pointDrag.y - 1, 3, 3);
-                if (!points.isEmpty()) {
-                    g.drawLine(points.getLast().x, points.getLast().y, pointDrag.x, pointDrag.y);
-   
-                }
+
+            if (model.getPoints().size() >= 2) {
+                graphics.drawPolyline(model.getPointsX(), model.getPointY(), model.getPoints().size());
+            }
+            if (curserPoint != null) {
+                graphics.drawLine(model.getPoints().getLast().x, model.getPoints().getLast().y, curserPoint.x, curserPoint.y);
             }
 
         }
     }
 
-    public BufferedImage getImage() {
-        return image;
+    private void drawScalePoints(Graphics2D graphics) {
+        graphics.setColor(Color.red);
+
+        if (model.getCurrentScale() != null) {
+            graphics.fillRect(model.getCurrentScale().x - 1, model.getCurrentScale().y - 1, 3, 3);
+        }
+        if (model.getLastScale() != null) {
+            graphics.fillRect(model.getLastScale().x - 1, model.getLastScale().y - 1, 3, 3);
+            graphics.drawLine(model.getCurrentScale().x, model.getCurrentScale().y, model.getLastScale().x, model.getLastScale().y);
+        }
+        if (curserScalePoint != null) {
+            graphics.fillRect(curserScalePoint.x - 1, curserScalePoint.y - 1, 3, 3);
+            if (model.getCurrentScale() != null) {
+                graphics.drawLine(model.getCurrentScale().x, model.getCurrentScale().y, curserScalePoint.x, curserScalePoint.y);
+
+            }
+        }
     }
 
-    public void setImage(BufferedImage image) {
-        this.image = image;
-        resized = null; 
-        lastDimension = null; 
-    }
+    private void createAndResizeImage() {
+        if (lastDimension == null || this.getWidth() != lastDimension.getWidth() || this.getHeight() != lastDimension.getHeight()) {
 
+            resized = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+
+            float scaleX = (float) this.getWidth() / (float) model.getImage().getWidth();
+            float scaleY = (float) this.getHeight() / (float) model.getImage().getHeight();
+
+            float scale = scaleX < scaleY ? scaleX : scaleY;
+
+            Image tmp = model.getImage().getScaledInstance((int) (model.getImage().getWidth() * scale), (int) (model.getImage().getHeight() * scale), Image.SCALE_SMOOTH);
+            resized.getGraphics().drawImage(tmp, 0, 0, null);
+
+            if (lastScale != 0) {
+                if (model.getLastScale() != null) {
+                    model.getLastScale().setLocation((float) model.getLastScale().x / lastScale * scale, (float) model.getLastScale().y / lastScale * scale);
+                }
+                if (model.getCurrentScale() != null) {
+                    model.getCurrentScale().setLocation((float) model.getCurrentScale().x / lastScale * scale, (float) model.getCurrentScale().y / lastScale * scale);
+                }
+                for (Point point : model.getPoints()) {
+                    point.setLocation((float) point.x / lastScale * scale, (float) point.y / lastScale * scale);
+                }
+            }
+
+            lastDimension = new Dimension(this.getWidth(), this.getHeight());
+            lastScale = scale;
+        }
+    }
 }

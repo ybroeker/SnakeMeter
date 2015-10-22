@@ -29,18 +29,21 @@ public class Window extends JFrame {
     private final Controller controller;
 
     private final JFrame window;
-    
+
     JButton load;
     JToggleButton messButton;
     JToggleButton massButton;
     ImagePanel imagePanel;
     JTextField inputField;
     JLabel result;
-JPanel menuPanel;
+    JPanel menuPanel;
+    JButton reset;
+    JButton undo;
+    JButton redo;
 
     public Window(Controller controller) {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-this.window=this;
+        this.window = this;
         this.setLayout(new BorderLayout());
 
         this.controller = controller;
@@ -63,6 +66,16 @@ this.window=this;
         massButton.addActionListener(controller);
         menuPanel.add(massButton);
 
+        reset = new JButton("Reset");
+        reset.addActionListener(controller);
+        menuPanel.add(reset);
+        undo = new JButton("undo");
+        undo.addActionListener(controller);
+        menuPanel.add(undo);
+        redo = new JButton("redo");
+        redo.addActionListener(controller);
+        menuPanel.add(redo);
+
         menuPanel.add(new JLabel("Maßstab:"));
         inputField = new JTextField("1");
         inputField.setColumns(10);
@@ -70,10 +83,10 @@ this.window=this;
         inputField.addActionListener(controller);
         menuPanel.add(inputField);
         menuPanel.add(new JLabel("cm"));
-        
+
         //Platzhalter
         menuPanel.add(new JLabel("   "));
-        
+
         menuPanel.add(new JLabel("Länge:"));
         result = new JLabel("0 cm");
         menuPanel.add(result);
@@ -85,7 +98,7 @@ this.window=this;
         this.imagePanel.addMouseListener(controller);
         this.imagePanel.addMouseMotionListener(controller);
 
-        this.setSize(800, 600);
+        this.setSize(1000, 800);
         this.setVisible(true);
         this.controller.init();
     }
@@ -106,10 +119,6 @@ this.window=this;
         return controller;
     }
 
-    public JPanel getImagePanel() {
-        return imagePanel;
-    }
-
     public JTextField getInputField() {
         return inputField;
     }
@@ -118,34 +127,45 @@ this.window=this;
         return result;
     }
 
-    public void setImage(BufferedImage image) {
-        this.imagePanel.setImage(image);
-        this.repaint();
-    }
-
     public void addNewerVersionHint() {
         JButton button = new JButton("Update verfügbar");
         button.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+
                 JPanel panel = new JPanel();
                 panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-                
+
                 panel.add(new JLabel("Eine neue Version ist unter"));
-                
+
                 JTextField textfield = new JTextField(VersionCheck.APP_PATH);
                 textfield.setEditable(false);
                 panel.add(textfield);
-                
+
                 panel.add(new JLabel("verfügbar"));
-                
-                JOptionPane.showMessageDialog(window, panel,"Update",JOptionPane.INFORMATION_MESSAGE);
+
+                JOptionPane.showMessageDialog(window, panel, "Update", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         menuPanel.add(button);
         this.revalidate();
     }
-    
+
+    public ImagePanel getImagePanel() {
+        return imagePanel;
+    }
+
+    public JButton getReset() {
+        return reset;
+    }
+
+    public JButton getUndo() {
+        return undo;
+    }
+
+    public JButton getRedo() {
+        return redo;
+    }
+
 }
