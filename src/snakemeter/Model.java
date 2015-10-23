@@ -5,8 +5,10 @@ import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
 import java.util.StringTokenizer;
 import snakemeter.Action.Action;
+import snakemeter.Action.DragAction;
 import snakemeter.Action.EAction;
 
 /**
@@ -79,6 +81,27 @@ public class Model {
         points.add(point);
     }
 
+    public void addDrag(Point start, Point point) {
+        actionsToDo.clear();
+        if (actions.getLast() instanceof DragAction && (isSamePoint(((DragAction)actions.getLast()).getFrom(),start))) {
+            DragAction dragAction = (DragAction)actions.getLast();
+                dragAction.getPoint().setLocation(point); 
+                dragAction.setTo(new Point(point));
+            
+            System.out.println(""+start+"->"+point);
+        } else {
+        
+            for (Point oldPoint : points) {
+                if (isSamePoint(oldPoint, point)) {
+                    oldPoint.setLocation(point);
+                    actions.add(new DragAction(EAction.DRAG, start, oldPoint, new Point(point)));
+                }
+            }
+        }
+        
+        
+    }
+    
     public void reset() {
         Collections.reverse(actions);
         actionsToDo.addAll(actions);
@@ -136,6 +159,8 @@ public class Model {
             } else if (action.getAction() == EAction.SCALE) {
                 scalePoints.add(action.getPoint());
 
+            } else if (action.getAction()==EAction.DRAG) {
+                ((DragAction)action).getPoint().setLocation(((DragAction)action).getTo());
             }
 
         }
@@ -157,9 +182,18 @@ public class Model {
                     scalePoints.removeLast();
                 }
 
+            } else if (action.getAction()==EAction.DRAG) {
+                ((DragAction)action).getPoint().setLocation(((DragAction)action).getFrom());
             }
-
         }
+
+        
     }
 
+    private boolean isSamePoint(Point point1, Point point2) {
+        
+        
+       return (Math.abs(point1.x-point2.x)<=5) && (Math.abs(point1.y-point2.y)<=5);
+    }
+    
 }

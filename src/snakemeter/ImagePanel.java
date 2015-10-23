@@ -33,7 +33,7 @@ public class ImagePanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (model.getImage() != null) {
+        if (model!=null&&model.getImage() != null) {
 
             createAndResizeImage();
 

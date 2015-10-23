@@ -5,6 +5,7 @@ package snakemeter.Action;
  * @author yannick-broeker
  */
 public enum EAction {
+
     /**
      * Added Scale Action.
      */
@@ -12,5 +13,9 @@ public enum EAction {
     /**
      * Added Point Action.
      */
-    POINT;
+    POINT,
+    /**
+     * Point dragged Action.
+     */
+    DRAG;
 }
