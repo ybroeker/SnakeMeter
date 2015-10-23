@@ -20,7 +20,7 @@ public class VersionCheck {
 
     public static final String VERSION_PATH = "https://raw.githubusercontent.com/ybroeker/SnakeMeter/master/version";
 
-    public static final String APP_PATH = "https://github.com/ybroeker/SnakeMeter/blob/master/dist/SnakeMeter.jar?raw=true";
+    public static final String APP_PATH = "https://github.com/ybroeker/SnakeMeter/releases/latest";
     
     public boolean checkForNewerVersion() {
         
