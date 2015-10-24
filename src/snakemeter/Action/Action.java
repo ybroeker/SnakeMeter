@@ -1,21 +1,22 @@
 package snakemeter.Action;
 
 import java.awt.Point;
+import snakemeter.EMode;
 
 /**
  *
  * @author yannick-broeker
  */
 public class Action {
-    EAction action;
+    EMode action;
     Point point;
 
-    public Action(EAction action, Point point) {
+    public Action(EMode action, Point point) {
         this.action = action;
         this.point = point;
     }
 
-    public EAction getAction() {
+    public EMode getAction() {
         return action;
     }
 

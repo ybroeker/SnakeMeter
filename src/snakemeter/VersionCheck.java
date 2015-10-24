@@ -1,14 +1,18 @@
 package snakemeter;
 
-import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  *
@@ -62,4 +66,27 @@ public class VersionCheck {
         return versionData.substring(0, index);
     }
     
+    public void addNewVersionHint(Window window) {
+        JButton button = new JButton("Update verfügbar");
+        button.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                JPanel panel = new JPanel();
+                panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+                panel.add(new JLabel("Eine neue Version ist unter"));
+
+                JTextField textfield = new JTextField(VersionCheck.APP_PATH);
+                textfield.setEditable(false);
+                panel.add(textfield);
+
+                panel.add(new JLabel("verfügbar"));
+
+                JOptionPane.showMessageDialog(window, panel, "Update", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        window.addNewVersionButton(button);
+    }
 }

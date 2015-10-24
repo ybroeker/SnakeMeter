@@ -4,12 +4,8 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Observable;
-import java.util.StringTokenizer;
 import snakemeter.Action.Action;
 import snakemeter.Action.DragAction;
-import snakemeter.Action.EAction;
 
 /**
  *
@@ -71,13 +67,13 @@ public class Model {
 
     public void addScalePoint(Point point) {
         actionsToDo.clear();
-        actions.add(new Action(EAction.SCALE, point));
+        actions.add(new Action(EMode.SCALE, point));
         scalePoints.add(point);
     }
 
     public void addPoint(Point point) {
         actionsToDo.clear();
-        actions.add(new Action(EAction.POINT, point));
+        actions.add(new Action(EMode.POINT, point));
         points.add(point);
     }
 
@@ -94,7 +90,7 @@ public class Model {
             for (Point oldPoint : points) {
                 if (isSamePoint(oldPoint, point)) {
                     oldPoint.setLocation(point);
-                    actions.add(new DragAction(EAction.DRAG, start, oldPoint, new Point(point)));
+                    actions.add(new DragAction(start, oldPoint, new Point(point)));
                 }
             }
         }
@@ -152,14 +148,14 @@ public class Model {
 
             actions.add(action);
 
-            if (action.getAction() == EAction.POINT) {
+            if (action.getAction() == EMode.POINT) {
 
                 points.add(action.getPoint());
 
-            } else if (action.getAction() == EAction.SCALE) {
+            } else if (action.getAction() == EMode.SCALE) {
                 scalePoints.add(action.getPoint());
 
-            } else if (action.getAction()==EAction.DRAG) {
+            } else if (action.getAction()==EMode.DRAG) {
                 ((DragAction)action).getPoint().setLocation(((DragAction)action).getTo());
             }
 
@@ -172,17 +168,17 @@ public class Model {
 
             actionsToDo.add(action);
 
-            if (action.getAction() == EAction.POINT) {
+            if (action.getAction() == EMode.POINT) {
                 if (!points.isEmpty()) {
                     points.removeLast();
                 }
 
-            } else if (action.getAction() == EAction.SCALE) {
+            } else if (action.getAction() == EMode.SCALE) {
                 if (!scalePoints.isEmpty()) {
                     scalePoints.removeLast();
                 }
 
-            } else if (action.getAction()==EAction.DRAG) {
+            } else if (action.getAction()==EMode.DRAG) {
                 ((DragAction)action).getPoint().setLocation(((DragAction)action).getFrom());
             }
         }

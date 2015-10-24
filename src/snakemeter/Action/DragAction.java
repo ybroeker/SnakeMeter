@@ -1,6 +1,7 @@
 package snakemeter.Action;
 
 import java.awt.Point;
+import snakemeter.EMode;
 
 /**
  *
@@ -11,8 +12,8 @@ public class DragAction extends Action {
     Point from;
     Point to;
 
-    public DragAction(EAction action, Point from, Point point, Point to) {
-        super(EAction.DRAG, point);
+    public DragAction(Point from, Point point, Point to) {
+        super(EMode.DRAG, point);
         this.from = from;
         this.to=to;
     }

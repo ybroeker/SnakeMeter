@@ -20,15 +20,22 @@ import javax.swing.JPanel;
  */
 public class ImagePanel extends JPanel {
 
-    BufferedImage resized;
+    private BufferedImage resized;
 
-    Point curserPoint;
-    Point curserScalePoint;
+    private Point curserPoint;
+    private Point curserScalePoint;
 
-    Dimension lastDimension;
-    float lastScale = 0;
+    private Dimension lastDimension;
+    private float lastScale = 0;
     private Model model;
 
+    public static final Color COLOR_POINT = Color.GREEN;
+    public static final Color COLOR_SCALE_1 = Color.RED;
+
+    ImagePanel(Model model) {
+        this.model=model;
+    }
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -37,7 +44,7 @@ public class ImagePanel extends JPanel {
 
             createAndResizeImage();
 
-            g.drawImage(resized, 0, 0, null); // see javadoc for more info on the parameters     
+            g.drawImage(resized, 0, 0, null);
 
             drawScalePoints((Graphics2D) g);
 
@@ -52,7 +59,7 @@ public class ImagePanel extends JPanel {
     }
 
     private void drawPoints(Graphics2D graphics) {
-        graphics.setColor(Color.green);
+        graphics.setColor(COLOR_POINT);
 
         if (curserPoint != null) {
             graphics.fillRect(curserPoint.x - 1, curserPoint.y - 1, 3, 3);
@@ -74,7 +81,7 @@ public class ImagePanel extends JPanel {
     }
 
     private void drawScalePoints(Graphics2D graphics) {
-        graphics.setColor(Color.red);
+        graphics.setColor(COLOR_SCALE_1);
 
         if (model.getCurrentScale() != null) {
             graphics.fillRect(model.getCurrentScale().x - 1, model.getCurrentScale().y - 1, 3, 3);
@@ -121,4 +128,22 @@ public class ImagePanel extends JPanel {
             lastScale = scale;
         }
     }
+
+    public void setCurserPoint(Point curserPoint) {
+        this.curserPoint = curserPoint;
+    }
+
+    public void setCurserScalePoint(Point curserScalePoint) {
+        this.curserScalePoint = curserScalePoint;
+    }
+
+    public void setLastDimension(Dimension lastDimension) {
+        this.lastDimension = lastDimension;
+    }
+
+    public void setLastScale(float lastScale) {
+        this.lastScale = lastScale;
+    }
+    
+    
 }

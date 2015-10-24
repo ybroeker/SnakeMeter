@@ -59,7 +59,7 @@ public class Window extends JFrame {
 
     
 
-    public Window(Controller controller) {
+    public Window(Controller controller, Model model) {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
@@ -67,7 +67,7 @@ public class Window extends JFrame {
 
         createMenu();
 
-        this.imagePanel = new ImagePanel();
+        this.imagePanel = new ImagePanel(model);
         this.add(imagePanel, CENTER);
 
         this.imagePanel.addMouseListener(controller);
@@ -190,29 +190,8 @@ public class Window extends JFrame {
     public JLabel getResult() {
         return result;
     }
-
-    public void addNewerVersionHint() {
-        JFrame window = this;
-        JButton button = new JButton("Update verfügbar");
-        button.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                JPanel panel = new JPanel();
-                panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-                panel.add(new JLabel("Eine neue Version ist unter"));
-
-                JTextField textfield = new JTextField(VersionCheck.APP_PATH);
-                textfield.setEditable(false);
-                panel.add(textfield);
-
-                panel.add(new JLabel("verfügbar"));
-
-                JOptionPane.showMessageDialog(window, panel, "Update", JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
+    
+    public void addNewVersionButton(JButton button) {
         menu.add(button);
         this.revalidate();
     }

@@ -20,43 +20,67 @@ import javax.swing.event.MouseInputListener;
  */
 public class Controller implements ActionListener, MouseInputListener {
 
+    /**
+     * Window.
+     */
     private final Window window;
-
+    /**
+     * Current selected mode.
+     */
     private EMode mode = EMode.NONE;
-
+    /**
+     * FileChooser to open Image.
+     */
     private final JFileChooser fc;
-
+    /**
+     * Model.
+     */
     private final Model model;
-    
-    private Point dragStart=null;
+    /**
+     * Point, where a drag starts.
+     */
+    private Point dragStart = null;
 
     public static void main(String[] args) {
         Controller controller = new Controller();
     }
 
-    public void init() {
-        enableButtons(false);
-        window.getImagePanel().setModel(model);
+    public Controller() {
+        model = new Model();
+        window = new Window(this, model);
+        this.enableButtons(false);
 
-        boolean newerVersion = new VersionCheck().checkForNewerVersion();
-        if (newerVersion) {
-            window.addNewerVersionHint();
-        }
+        fc = initFileChooser();
 
+        initVersionCheck();
     }
 
-//In response to a button click:
-    public Controller() {
-        window = new Window(this);
-
-        model = new Model();
-
-        fc = new JFileChooser();
+    /**
+     * Inits FileChooser.
+     * <p>
+     * @return FileChooser
+     */
+    public JFileChooser initFileChooser() {
+        JFileChooser fc = new JFileChooser();
         fc.addChoosableFileFilter(new ImageFilter());
 
         fc.setAcceptAllFileFilterUsed(false);
+        return fc;
+    }
 
-        this.init();
+    /**
+     * Inits and starts VersionCheck.
+     * <p>
+     * @return VersionCheck
+     */
+    public VersionCheck initVersionCheck() {
+        VersionCheck versionCheck = new VersionCheck();
+
+        boolean newerVersion = versionCheck.checkForNewerVersion();
+        if (newerVersion) {
+            versionCheck.addNewVersionHint(window);
+        }
+        return versionCheck;
     }
 
     @Override
@@ -73,7 +97,7 @@ public class Controller implements ActionListener, MouseInputListener {
                     model.setImage(image);
                     enableButtons(true);
                     model.reset();
-                    window.getImagePanel().lastDimension = null;
+                    window.getImagePanel().setLastDimension(null);
                     window.repaint();
                 } catch (IOException ex) {
                     Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
@@ -112,12 +136,20 @@ public class Controller implements ActionListener, MouseInputListener {
 
     }
 
+    /**
+     * Enables Buttons for Scaling etc.
+     * <p>
+     * @param enable
+     */
     private void enableButtons(boolean enable) {
         window.getScale1Button().setEnabled(enable);
         window.getMessButton().setEnabled(enable);
         window.getDragButton().setEnabled(enable);
     }
 
+    /**
+     * deselect all ToggleButtons.
+     */
     private void deselectAll() {
         window.getScale1Button().setSelected(false);
         window.getMessButton().setSelected(false);
@@ -130,8 +162,8 @@ public class Controller implements ActionListener, MouseInputListener {
             mode = EMode.NONE;
             window.getScale1Button().setSelected(false);
             window.getMessButton().setSelected(false);
-            window.getImagePanel().curserPoint = null;
-            window.getImagePanel().curserScalePoint = null;
+            window.getImagePanel().setCurserPoint(null);
+            window.getImagePanel().setCurserScalePoint(null);
         } else if (mode == EMode.SCALE) {
 
             model.addScalePoint(e.getPoint());
@@ -146,14 +178,14 @@ public class Controller implements ActionListener, MouseInputListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (mode==EMode.DRAG && dragStart==null) {
-            dragStart=e.getPoint();
+        if (mode == EMode.DRAG && dragStart == null) {
+            dragStart = e.getPoint();
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        dragStart=null;
+        dragStart = null;
     }
 
     @Override
@@ -163,8 +195,8 @@ public class Controller implements ActionListener, MouseInputListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
-        window.getImagePanel().curserPoint = null;
-        window.getImagePanel().curserScalePoint = null;
+        window.getImagePanel().setCurserPoint(null);
+        window.getImagePanel().setCurserScalePoint(null);
         window.getImagePanel().repaint();
     }
 
@@ -177,7 +209,7 @@ public class Controller implements ActionListener, MouseInputListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (dragStart!=null) {
+        if (dragStart != null) {
             model.addDrag(dragStart, e.getPoint());
         }
         window.getImagePanel().repaint();
@@ -185,19 +217,18 @@ public class Controller implements ActionListener, MouseInputListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        window.getImagePanel().setCurserScalePoint(null);
+        window.getImagePanel().setCurserPoint(null);
 
-        if (mode == EMode.SCALE) {
-            window.getImagePanel().curserScalePoint = e.getPoint();
-            window.getImagePanel().curserPoint = null;
-
-        } else if (mode == EMode.POINT) {
-            window.getImagePanel().curserPoint = e.getPoint();
-            window.getImagePanel().curserScalePoint = null;
-
-        } else {
-            window.getImagePanel().curserScalePoint = null;
-            window.getImagePanel().curserPoint = null;
+        switch (mode) {
+            case SCALE:
+                window.getImagePanel().setCurserScalePoint(e.getPoint());
+                break;
+            case POINT:
+                window.getImagePanel().setCurserPoint(e.getPoint());
+                break;
         }
+
         window.getImagePanel().repaint();
     }
 }
