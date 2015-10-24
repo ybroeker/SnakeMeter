@@ -86,22 +86,22 @@ public class Window extends JFrame {
         
         createEditMenu();
 
-        messButton = new JToggleButton("Messen");
+        messButton = new JToggleButton(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("MESSEN"));
         messButton.addActionListener(controller);
         menu.add(messButton);
 
-        scale1Button = new JToggleButton("Maßstab setzten");
+        scale1Button = new JToggleButton(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("SET_SCALE"));
         scale1Button.addActionListener(controller);
         menu.add(scale1Button);
 
         
-        dragButton = new JToggleButton("Drag");
+        dragButton = new JToggleButton(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("DRAG"));
         dragButton.addActionListener(controller);
         menu.add(dragButton);
         
         menu.add(new JSeparator(JSeparator.VERTICAL));
 
-        menu.add(new JLabel("Maßstab:"));
+        menu.add(new JLabel(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("SCALE")));
         scale1Input = new JTextField("1");
         scale1Input.setColumns(10);
         scale1Input.setMaximumSize(new Dimension(100, 200));
@@ -112,7 +112,7 @@ public class Window extends JFrame {
         //Platzhalter
         menu.add(new JLabel("   "));
 
-        menu.add(new JLabel("Länge:"));
+        menu.add(new JLabel(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("LENGTH")));
         result = new JLabel("0 cm");
         menu.add(result);
 
@@ -120,17 +120,17 @@ public class Window extends JFrame {
     }
 
     private void createFileMenu() {
-        JMenu jMenu = new JMenu("Datei");
+        JMenu jMenu = new JMenu(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("FILE"));
 
         menu.add(jMenu);
 
-        load = new JMenuItem("Bild laden");
+        load = new JMenuItem(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("LOAD"));
         load.setAccelerator(KeyStroke.getKeyStroke(SHORTCUT_OPEN, CONTROL));
         jMenu.add(load);
         load.addActionListener(controller);
         
         
-        save = new JMenuItem("Speichern");
+        save = new JMenuItem(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("SAVE"));
         save.setAccelerator(KeyStroke.getKeyStroke(SHORTCUT_SAVE, CONTROL));
         jMenu.add(save);
         save.addActionListener(controller);
@@ -149,17 +149,17 @@ public class Window extends JFrame {
          redo = new JButton("redo");
          redo.addActionListener(controller);
          menu.add(redo);*/
-        JMenu jMenu = new JMenu("Bearbeiten");
+        JMenu jMenu = new JMenu(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("EDIT"));
 
-        reset = new JMenuItem("Reset");
+        reset = new JMenuItem(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("RESET"));
         reset.addActionListener(controller);
         reset.setAccelerator(KeyStroke.getKeyStroke(SHORTCUT_RESET, CONTROL));
         jMenu.add(reset);
-        undo = new JMenuItem("undo");
+        undo = new JMenuItem(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("UNDO"));
         undo.addActionListener(controller);
         undo.setAccelerator(KeyStroke.getKeyStroke(SHORTCUT_UNDO, CONTROL));
         jMenu.add(undo);
-        redo = new JMenuItem("redo");
+        redo = new JMenuItem(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("REDO"));
         redo.addActionListener(controller);
         redo.setAccelerator(KeyStroke.getKeyStroke(SHORTCUT_UNDO, SHIFT + CONTROL));
         jMenu.add(redo);

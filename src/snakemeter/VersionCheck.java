@@ -20,7 +20,7 @@ import javax.swing.JTextField;
  */
 public class VersionCheck {
 
-    public static final String CURRENT_VERSION = "0.3";
+    public static final String CURRENT_VERSION = "0.3.2";
 
     public static final String VERSION_PATH = "https://raw.githubusercontent.com/ybroeker/SnakeMeter/master/version";
 
@@ -67,7 +67,7 @@ public class VersionCheck {
     }
     
     public void addNewVersionHint(Window window) {
-        JButton button = new JButton("Update verfügbar");
+        JButton button = new JButton(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("UPDATE_AVAILABLE"));
         button.addActionListener(new ActionListener() {
 
             @Override
@@ -76,15 +76,15 @@ public class VersionCheck {
                 JPanel panel = new JPanel();
                 panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-                panel.add(new JLabel("Eine neue Version ist unter"));
+                panel.add(new JLabel(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("NEW_VERSION_UNDER")));
 
                 JTextField textfield = new JTextField(VersionCheck.APP_PATH);
                 textfield.setEditable(false);
                 panel.add(textfield);
 
-                panel.add(new JLabel("verfügbar"));
+                panel.add(new JLabel(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("AVAILABLE")));
 
-                JOptionPane.showMessageDialog(window, panel, "Update", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(window, panel, java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("UPDATE"), JOptionPane.INFORMATION_MESSAGE);
             }
         });
         window.addNewVersionButton(button);
