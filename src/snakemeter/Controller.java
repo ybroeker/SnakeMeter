@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -19,6 +20,10 @@ import javax.swing.event.MouseInputListener;
  * @author yannick-broeker
  */
 public class Controller implements ActionListener, MouseInputListener {
+
+    public static void main(String[] args) {
+        Controller controller = new Controller();
+    }
 
     /**
      * Window.
@@ -40,10 +45,10 @@ public class Controller implements ActionListener, MouseInputListener {
      * Point, where a drag starts.
      */
     private Point dragStart = null;
-
-    public static void main(String[] args) {
-        Controller controller = new Controller();
-    }
+    /**
+     * Result-Format. 
+     */
+    private DecimalFormat decimalFormat = new DecimalFormat("###.#");
 
     public Controller() {
         model = new Model();
@@ -85,6 +90,7 @@ public class Controller implements ActionListener, MouseInputListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        
         if (e.getSource() == (window.getLoad())) {
             //LOAD
             int returnVal = fc.showOpenDialog(window);
@@ -119,15 +125,15 @@ public class Controller implements ActionListener, MouseInputListener {
             window.getDragButton().setSelected(true);
         } else if (e.getSource() == (window.getScale1Input())) {
             parseInput(window.getScale1Input().getText());
-            window.getResult().setText("" + model.calculate() + " cm");
+            window.getResult().setText("" + decimalFormat.format(model.calculate()) + " cm");
         } else if (e.getSource() == window.getUndo()) {
             model.undo();
             window.getImagePanel().repaint();
-            window.getResult().setText("" + model.calculate() + " cm");
+            window.getResult().setText("" + decimalFormat.format(model.calculate()) + " cm");
         } else if (e.getSource() == window.getRedo()) {
             model.redo();
             window.getImagePanel().repaint();
-            window.getResult().setText("" + model.calculate() + " cm");
+            window.getResult().setText("" + decimalFormat.format(model.calculate()) + " cm");
         } else if (e.getSource() == window.getReset()) {
             model.reset();
             window.getImagePanel().repaint();
@@ -173,7 +179,7 @@ public class Controller implements ActionListener, MouseInputListener {
         }
         window.getImagePanel().repaint();
         parseInput(window.getScale1Input().getText());
-        window.getResult().setText("" + model.calculate() + " cm");
+        window.getResult().setText("" + decimalFormat.format(model.calculate()) + " cm");
     }
 
     @Override
@@ -231,4 +237,5 @@ public class Controller implements ActionListener, MouseInputListener {
 
         window.getImagePanel().repaint();
     }
+
 }

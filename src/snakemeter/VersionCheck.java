@@ -20,7 +20,7 @@ import javax.swing.JTextField;
  */
 public class VersionCheck {
 
-    public static final String CURRENT_VERSION = "0.3.2";
+    public static final String CURRENT_VERSION = "0.3.3";
 
     public static final String VERSION_PATH = "https://raw.githubusercontent.com/ybroeker/SnakeMeter/master/version";
 
