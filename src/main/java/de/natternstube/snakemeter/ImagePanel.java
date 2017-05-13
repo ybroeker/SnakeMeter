@@ -1,4 +1,4 @@
-package snakemeter;
+package de.natternstube.snakemeter;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -6,12 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.geom.CubicCurve2D;
-import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.util.LinkedList;
 import javax.swing.JPanel;
 
 /**

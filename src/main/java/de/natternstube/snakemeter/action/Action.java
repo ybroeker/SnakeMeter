@@ -1,7 +1,8 @@
-package snakemeter.Action;
+package de.natternstube.snakemeter.action;
 
-import java.awt.Point;
-import snakemeter.EMode;
+import de.natternstube.snakemeter.EMode;
+
+import java.awt.*;
 
 /**
  *

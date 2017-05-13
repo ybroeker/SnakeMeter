@@ -1,10 +1,10 @@
-package snakemeter.Action;
+package de.natternstube.snakemeter.action;
 
-import java.awt.Point;
-import snakemeter.EMode;
+import de.natternstube.snakemeter.EMode;
+
+import java.awt.*;
 
 /**
- *
  * @author yannick-broeker
  */
 public class DragAction extends Action {
@@ -15,7 +15,7 @@ public class DragAction extends Action {
     public DragAction(Point from, Point point, Point to) {
         super(EMode.DRAG, point);
         this.from = from;
-        this.to=to;
+        this.to = to;
     }
 
     public Point getFrom() {

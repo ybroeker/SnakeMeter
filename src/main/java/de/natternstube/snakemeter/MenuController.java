@@ -1,4 +1,4 @@
-package snakemeter;
+package de.natternstube.snakemeter;
 
 /**
  *

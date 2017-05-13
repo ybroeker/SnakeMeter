@@ -1,14 +1,14 @@
-package snakemeter;
+package de.natternstube.snakemeter;
 
-import java.awt.Point;
+import de.natternstube.snakemeter.action.Action;
+import de.natternstube.snakemeter.action.DragAction;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.LinkedList;
-import snakemeter.Action.Action;
-import snakemeter.Action.DragAction;
 
 /**
- *
  * @author yannick-broeker
  */
 public class Model {
@@ -79,14 +79,14 @@ public class Model {
 
     public void addDrag(Point start, Point point) {
         actionsToDo.clear();
-        if (actions.getLast() instanceof DragAction && (isSamePoint(((DragAction)actions.getLast()).getFrom(),start))) {
-            DragAction dragAction = (DragAction)actions.getLast();
-                dragAction.getPoint().setLocation(point); 
-                dragAction.setTo(new Point(point));
-            
-            System.out.println(""+start+"->"+point);
+        if (actions.getLast() instanceof DragAction && (isSamePoint(((DragAction) actions.getLast()).getFrom(), start))) {
+            DragAction dragAction = (DragAction) actions.getLast();
+            dragAction.getPoint().setLocation(point);
+            dragAction.setTo(new Point(point));
+
+            System.out.println("" + start + "->" + point);
         } else {
-        
+
             for (Point oldPoint : points) {
                 if (isSamePoint(oldPoint, point)) {
                     oldPoint.setLocation(point);
@@ -94,10 +94,10 @@ public class Model {
                 }
             }
         }
-        
-        
+
+
     }
-    
+
     public void reset() {
         Collections.reverse(actions);
         actionsToDo.addAll(actions);
@@ -155,8 +155,8 @@ public class Model {
             } else if (action.getAction() == EMode.SCALE) {
                 scalePoints.add(action.getPoint());
 
-            } else if (action.getAction()==EMode.DRAG) {
-                ((DragAction)action).getPoint().setLocation(((DragAction)action).getTo());
+            } else if (action.getAction() == EMode.DRAG) {
+                ((DragAction) action).getPoint().setLocation(((DragAction) action).getTo());
             }
 
         }
@@ -178,18 +178,18 @@ public class Model {
                     scalePoints.removeLast();
                 }
 
-            } else if (action.getAction()==EMode.DRAG) {
-                ((DragAction)action).getPoint().setLocation(((DragAction)action).getFrom());
+            } else if (action.getAction() == EMode.DRAG) {
+                ((DragAction) action).getPoint().setLocation(((DragAction) action).getFrom());
             }
         }
 
-        
+
     }
 
     private boolean isSamePoint(Point point1, Point point2) {
-        
-        
-       return (Math.abs(point1.x-point2.x)<=5) && (Math.abs(point1.y-point2.y)<=5);
+
+
+        return (Math.abs(point1.x - point2.x) <= 5) && (Math.abs(point1.y - point2.y) <= 5);
     }
-    
+
 }

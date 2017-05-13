@@ -1,6 +1,10 @@
-package snakemeter;
+package de.natternstube.snakemeter;
 
-import java.awt.Point;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.event.MouseInputListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -10,13 +14,8 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
-import javax.swing.SwingUtilities;
-import javax.swing.event.MouseInputListener;
 
 /**
- *
  * @author yannick-broeker
  */
 public class Controller implements ActionListener, MouseInputListener {
@@ -41,12 +40,13 @@ public class Controller implements ActionListener, MouseInputListener {
      * Model.
      */
     private final Model model;
+
     /**
      * Point, where a drag starts.
      */
     private Point dragStart = null;
     /**
-     * Result-Format. 
+     * Result-Format.
      */
     private DecimalFormat decimalFormat = new DecimalFormat("###.#");
 
@@ -63,11 +63,16 @@ public class Controller implements ActionListener, MouseInputListener {
     /**
      * Inits FileChooser.
      * <p>
+     *
      * @return FileChooser
      */
     public JFileChooser initFileChooser() {
+        final String[] formats = {"jpeg", "jpg", "gif", "png"};
+        String desc = "Images (." + String.join(", .", formats) + ")";
+
         JFileChooser fc = new JFileChooser();
-        fc.addChoosableFileFilter(new ImageFilter());
+
+        fc.addChoosableFileFilter(new FileNameExtensionFilter(desc, formats));
 
         fc.setAcceptAllFileFilterUsed(false);
         return fc;
@@ -76,6 +81,7 @@ public class Controller implements ActionListener, MouseInputListener {
     /**
      * Inits and starts VersionCheck.
      * <p>
+     *
      * @return VersionCheck
      */
     public VersionCheck initVersionCheck() {
@@ -90,7 +96,7 @@ public class Controller implements ActionListener, MouseInputListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        
+
         if (e.getSource() == (window.getLoad())) {
             //LOAD
             int returnVal = fc.showOpenDialog(window);
@@ -125,26 +131,30 @@ public class Controller implements ActionListener, MouseInputListener {
             window.getDragButton().setSelected(true);
         } else if (e.getSource() == (window.getScale1Input())) {
             parseInput(window.getScale1Input().getText());
-            window.getResult().setText("" + decimalFormat.format(model.calculate()) + " cm");
+            window.getResult().setText(formatLength());
         } else if (e.getSource() == window.getUndo()) {
             model.undo();
             window.getImagePanel().repaint();
-            window.getResult().setText("" + decimalFormat.format(model.calculate()) + " cm");
+            window.getResult().setText(formatLength());
         } else if (e.getSource() == window.getRedo()) {
             model.redo();
             window.getImagePanel().repaint();
-            window.getResult().setText("" + decimalFormat.format(model.calculate()) + " cm");
+            window.getResult().setText(formatLength());
         } else if (e.getSource() == window.getReset()) {
             model.reset();
             window.getImagePanel().repaint();
-            window.getResult().setText("" + 0 + " cm");
+            window.getResult().setText(formatLength());
         }
+    }
 
+    String formatLength() {
+        return String.format("%s cm",decimalFormat.format(model.calculate()));
     }
 
     /**
      * Enables Buttons for Scaling etc.
      * <p>
+     *
      * @param enable
      */
     private void enableButtons(boolean enable) {
