@@ -4,7 +4,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -148,7 +147,7 @@ public class Controller implements ActionListener, MouseInputListener {
     }
 
     String formatLength() {
-        return String.format("%s cm",decimalFormat.format(model.calculate()));
+        return String.format("%s cm", decimalFormat.format(model.calculate()));
     }
 
     /**
@@ -181,11 +180,9 @@ public class Controller implements ActionListener, MouseInputListener {
             window.getImagePanel().setCurserPoint(null);
             window.getImagePanel().setCurserScalePoint(null);
         } else if (mode == EMode.SCALE) {
-
-            model.addScalePoint(e.getPoint());
-
+            model.addScalePoint(new Point(e.getPoint()).mul(1 / window.getImagePanel().getScale()));
         } else if (mode == EMode.POINT) {
-            model.addPoint(e.getPoint());
+            model.addPoint(new Point(e.getPoint()).mul(1 / window.getImagePanel().getScale()));
         }
         window.getImagePanel().repaint();
         parseInput(window.getScale1Input().getText());
@@ -195,7 +192,7 @@ public class Controller implements ActionListener, MouseInputListener {
     @Override
     public void mousePressed(MouseEvent e) {
         if (mode == EMode.DRAG && dragStart == null) {
-            dragStart = e.getPoint();
+            dragStart = new Point(e.getPoint()).mul(1 / window.getImagePanel().getScale());
         }
     }
 
@@ -226,7 +223,7 @@ public class Controller implements ActionListener, MouseInputListener {
     @Override
     public void mouseDragged(MouseEvent e) {
         if (dragStart != null) {
-            model.addDrag(dragStart, e.getPoint());
+            model.addDrag(dragStart, new Point(e.getPoint()).mul(1 / window.getImagePanel().getScale()));
         }
         window.getImagePanel().repaint();
     }
@@ -238,10 +235,10 @@ public class Controller implements ActionListener, MouseInputListener {
 
         switch (mode) {
             case SCALE:
-                window.getImagePanel().setCurserScalePoint(e.getPoint());
+                window.getImagePanel().setCurserScalePoint(new Point(e.getPoint()));
                 break;
             case POINT:
-                window.getImagePanel().setCurserPoint(e.getPoint());
+                window.getImagePanel().setCurserPoint(new Point(e.getPoint()));
                 break;
         }
 

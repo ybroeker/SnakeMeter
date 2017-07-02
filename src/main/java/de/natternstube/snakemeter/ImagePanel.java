@@ -1,19 +1,16 @@
 package de.natternstube.snakemeter;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import javax.swing.JPanel;
+import java.util.List;
 
 /**
- *
  * @author yannick-broeker
  */
 public class ImagePanel extends JPanel {
+
+    private boolean showBezier = true;
 
     private BufferedImage resized;
 
@@ -28,16 +25,16 @@ public class ImagePanel extends JPanel {
     public static final Color COLOR_SCALE_1 = Color.RED;
 
     ImagePanel(Model model) {
-        this.model=model;
+        this.model = model;
     }
-    
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (model!=null&&model.getImage() != null) {
+        if (model != null && model.getImage() != null) {
 
-            createAndResizeImage();
+            createAndResizeImageIfNecessary();
 
             g.drawImage(resized, 0, 0, null);
 
@@ -57,20 +54,29 @@ public class ImagePanel extends JPanel {
         graphics.setColor(COLOR_POINT);
 
         if (curserPoint != null) {
-            graphics.fillRect(curserPoint.x - 1, curserPoint.y - 1, 3, 3);
+            graphics.fillRect(curserPoint.toAWT().x - 1, curserPoint.toAWT().y - 1, 3, 3);
         }
 
         if (!model.getPoints().isEmpty()) {
-            for (Point point : model.getPoints()) {
-                graphics.fillRect(point.x - 1, point.y - 1, 3, 3);
+            List<Point> points = showBezier ? model.bezier() : model.getPoints();
+
+            int[] xs = new int[points.size()];
+            int[] ys = new int[points.size()];
+            int i = 0;
+            for (Point point : points) {
+                xs[i] = point.mul(lastScale).toAWT().x;
+                ys[i] = point.mul(lastScale).toAWT().y;
+                graphics.fillRect(xs[i] - 1, ys[i] - 1, 3, 3);
+                i++;
             }
 
             if (model.getPoints().size() >= 2) {
-                graphics.drawPolyline(model.getPointsX(), model.getPointY(), model.getPoints().size());
+                graphics.drawPolyline(xs, ys, xs.length);
             }
             if (curserPoint != null) {
-                graphics.drawLine(model.getPoints().getLast().x, model.getPoints().getLast().y, curserPoint.x, curserPoint.y);
+                graphics.drawLine(xs[xs.length - 1], ys[ys.length - 1], curserPoint.toAWT().x, curserPoint.toAWT().y);
             }
+
 
         }
     }
@@ -79,22 +85,22 @@ public class ImagePanel extends JPanel {
         graphics.setColor(COLOR_SCALE_1);
 
         if (model.getCurrentScale() != null) {
-            graphics.fillRect(model.getCurrentScale().x - 1, model.getCurrentScale().y - 1, 3, 3);
+            graphics.fillRect(model.getCurrentScale().mul(lastScale).toAWT().x - 1, model.getCurrentScale().mul(lastScale).toAWT().y - 1, 3, 3);
         }
         if (model.getLastScale() != null) {
-            graphics.fillRect(model.getLastScale().x - 1, model.getLastScale().y - 1, 3, 3);
-            graphics.drawLine(model.getCurrentScale().x, model.getCurrentScale().y, model.getLastScale().x, model.getLastScale().y);
+            graphics.fillRect(model.getLastScale().mul(lastScale).toAWT().x - 1, model.getLastScale().mul(lastScale).toAWT().y - 1, 3, 3);
+            graphics.drawLine(model.getCurrentScale().mul(lastScale).toAWT().x, model.getCurrentScale().mul(lastScale).toAWT().y, model.getLastScale().mul(lastScale).toAWT().x, model.getLastScale().mul(lastScale).toAWT().y);
         }
         if (curserScalePoint != null) {
-            graphics.fillRect(curserScalePoint.x - 1, curserScalePoint.y - 1, 3, 3);
+            graphics.fillRect(curserScalePoint.toAWT().x - 1, curserScalePoint.toAWT().y - 1, 3, 3);
             if (model.getCurrentScale() != null) {
-                graphics.drawLine(model.getCurrentScale().x, model.getCurrentScale().y, curserScalePoint.x, curserScalePoint.y);
+                graphics.drawLine(model.getCurrentScale().mul(lastScale).toAWT().x, model.getCurrentScale().mul(lastScale).toAWT().y, curserScalePoint.toAWT().x, curserScalePoint.toAWT().y);
 
             }
         }
     }
 
-    private void createAndResizeImage() {
+    private void createAndResizeImageIfNecessary() {
         if (lastDimension == null || this.getWidth() != lastDimension.getWidth() || this.getHeight() != lastDimension.getHeight()) {
 
             resized = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -107,6 +113,7 @@ public class ImagePanel extends JPanel {
             Image tmp = model.getImage().getScaledInstance((int) (model.getImage().getWidth() * scale), (int) (model.getImage().getHeight() * scale), Image.SCALE_SMOOTH);
             resized.getGraphics().drawImage(tmp, 0, 0, null);
 
+            /*
             if (lastScale != 0) {
                 if (model.getLastScale() != null) {
                     model.getLastScale().setLocation((float) model.getLastScale().x / lastScale * scale, (float) model.getLastScale().y / lastScale * scale);
@@ -118,6 +125,7 @@ public class ImagePanel extends JPanel {
                     point.setLocation((float) point.x / lastScale * scale, (float) point.y / lastScale * scale);
                 }
             }
+            */
 
             lastDimension = new Dimension(this.getWidth(), this.getHeight());
             lastScale = scale;
@@ -139,6 +147,9 @@ public class ImagePanel extends JPanel {
     public void setLastScale(float lastScale) {
         this.lastScale = lastScale;
     }
-    
-    
+
+
+    public double getScale() {
+        return lastScale;
+    }
 }

@@ -1,33 +1,28 @@
 package de.natternstube.snakemeter.action;
 
 import de.natternstube.snakemeter.EMode;
+import de.natternstube.snakemeter.Point;
 
-import java.awt.*;
 
 /**
  * @author yannick-broeker
  */
 public class DragAction extends Action {
 
-    Point from;
-    Point to;
+    final int index;
+    final Point from;
 
-    public DragAction(Point from, Point point, Point to) {
-        super(EMode.DRAG, point);
+    public DragAction(final int index, final Point from, final Point to) {
+        super(EMode.DRAG, to);
+        this.index = index;
         this.from = from;
-        this.to = to;
     }
 
     public Point getFrom() {
         return from;
     }
 
-    public Point getTo() {
-        return to;
+    public int getIndex() {
+        return index;
     }
-
-    public void setTo(Point to) {
-        this.to = to;
-    }
-
 }
