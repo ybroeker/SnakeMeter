@@ -10,7 +10,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- *
  * @author yannick-broeker
  */
 public class VersionCheck {
@@ -20,18 +19,18 @@ public class VersionCheck {
     public static final String VERSION_PATH = "https://raw.githubusercontent.com/ybroeker/SnakeMeter/master/version";
 
     public static final String APP_PATH = "https://github.com/ybroeker/SnakeMeter/releases/latest";
-    
+
     public boolean checkForNewerVersion() {
-        
+
         String versionData;
         try {
             versionData = getVersionData();
         } catch (IOException ex) {
             //Logger.getLogger(VersionCheck.class.getName()).log(Level.SEVERE, null, ex);
             return false;
-        }        
-        
-                if (!CURRENT_VERSION.equals(getVersionFromVersionData(versionData)) ) {            
+        }
+
+        if (!CURRENT_VERSION.equals(getVersionFromVersionData(versionData))) {
             return true;
         }
         return false;
@@ -55,12 +54,12 @@ public class VersionCheck {
 
     private String getVersionFromVersionData(String versionData) {
         int index = versionData.indexOf("\n");
-        if (index==-1) {
+        if (index == -1) {
             return versionData;
         }
         return versionData.substring(0, index);
     }
-    
+
     public void addNewVersionHint(Window window) {
         JButton button = new JButton(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("UPDATE_AVAILABLE"));
         button.addActionListener(new ActionListener() {
@@ -79,7 +78,7 @@ public class VersionCheck {
 
                 panel.add(new JLabel(java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("AVAILABLE")));
 
-                JOptionPane.showMessageDialog(window, panel, java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("UPDATE"), JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(window.getFrame(), panel, java.util.ResourceBundle.getBundle("snakemeter/Bundle").getString("UPDATE"), JOptionPane.INFORMATION_MESSAGE);
             }
         });
         window.addNewVersionButton(button);

@@ -10,7 +10,7 @@ import static java.awt.BorderLayout.PAGE_START;
  *
  * @author yannick-broeker
  */
-public class Window extends JFrame {
+public class Window /*extends JFrame*/ {
 
     public static final char SHORTCUT_UNDO = 'Z';
     public static final char SHORTCUT_RESET = 'R';
@@ -20,7 +20,6 @@ public class Window extends JFrame {
     public static final int CONTROL = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
     
     private final Controller controller;
-
 
     private  JMenuItem load;
     private  JMenuItem save;
@@ -35,30 +34,32 @@ public class Window extends JFrame {
     private  JMenuItem undo;
     private  JMenuItem redo;
 
-    
+    private JFrame frame;
 
     public Window(Controller controller, Model model) {
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLayout(new BorderLayout());
+        this.frame = new JFrame("SnakeMeter");
+
+        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.frame.setLayout(new BorderLayout());
 
         this.controller = controller;
 
         createMenu();
 
         this.imagePanel = new ImagePanel(model);
-        this.add(imagePanel, CENTER);
+        this.frame.add(imagePanel, CENTER);
 
         this.imagePanel.addMouseListener(controller);
         this.imagePanel.addMouseMotionListener(controller);
 
-        this.setSize(1000, 800);
-        this.setVisible(true);
+        this.frame.setSize(1000, 800);
+        this.frame.setVisible(true);
     }
 
     private void createMenu() {
         menu = new JMenuBar();
 
-        this.add(menu, PAGE_START);
+        this.frame.add(menu, PAGE_START);
 
         createFileMenu();
         
@@ -171,7 +172,7 @@ public class Window extends JFrame {
     
     public void addNewVersionButton(JButton button) {
         menu.add(button);
-        this.revalidate();
+        this.frame.revalidate();
     }
 
     public ImagePanel getImagePanel() {
@@ -198,4 +199,7 @@ public class Window extends JFrame {
         return dragButton;
     }
 
+    public JFrame getFrame() {
+        return frame;
+    }
 }

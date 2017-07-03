@@ -98,7 +98,7 @@ public class Controller implements ActionListener, MouseInputListener {
 
         if (e.getSource() == (window.getLoad())) {
             //LOAD
-            int returnVal = fc.showOpenDialog(window);
+            int returnVal = fc.showOpenDialog(window.getFrame());
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
@@ -109,7 +109,7 @@ public class Controller implements ActionListener, MouseInputListener {
                     enableButtons(true);
                     model.reset();
                     window.getImagePanel().setLastDimension(null);
-                    window.repaint();
+                    window.getFrame().repaint();
                 } catch (IOException ex) {
                     Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }

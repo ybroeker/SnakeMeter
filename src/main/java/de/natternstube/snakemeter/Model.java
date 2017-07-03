@@ -39,18 +39,25 @@ public class Model {
             return 0;
         }
 
-        double lenghtScale = scalePoints.get(scalePoints.size() - 1).distance(scalePoints.get(scalePoints.size() - 2));
+        double lenghtScale = length(scalePoints);
 
-        Point last = null;
-        float lenghtPx = 0;
-        for (Point point : (bezier ? bezier() : points)) {
-            if (last != null) {
-                lenghtPx += last.distance(point);
-            }
-            last = point;
-        }
+        double lenghtPx = length(bezier ? bezier() : points);
 
         return lenghtPx / lenghtScale * scale;
+    }
+
+    private double length(List<Point> points) {
+        if (points.isEmpty()) {
+            return 0;
+        }
+
+        Point last = points.get(0);
+        double length = 0;
+        for (Point point : points) {
+            length += last.distance(point);
+            last = point;
+        }
+        return length;
     }
 
     /**
