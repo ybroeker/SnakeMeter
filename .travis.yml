@@ -1,0 +1,14 @@
+language: java
+jdk:
+- oraclejdk8
+script: mcn clean package
+deploy:
+  provider: releases
+  api_key:
+    secure: a+oeN4LwB/JDRD6K59ohLLflN3fVIxuj+i4SZc4VAODIOlWQnZoP5j+LSmGK1nAia33mXpb0mHuR/LCqcxIPqFHPVtQdaDYdn4xWH45x/O3e2uusLw0Dszvc7V/JWkBFjjogqDAIoan1IhCu1QHSbO+TwzfYbqIdwWp6jyaHGlhed5ZO8htCVYq1Cpl+mZVhdfGq/uMV+uxvFLwRvJ5ugQd3JnfQGjpgFZ72UKjCqLVVwJibbtFqnZNUipedKIJpuJvlGdm0qZTAZlxpUUUsEjiBPyyaLBIumBKFD5B2GZ5TA8iI3jjjYQrf9opPKqjZKrHLq8YSF8DOIYmHYsorpNrvgmlshKiAvRXzZM2KB0Oi6wtQSEBiQIjSbGKL9SNLokwLvcI+8ZoKbXDeXehHMNsT5SJLZyQ5xk2k7qjdGt3LkSINlVceqKw3r7xHusKw/h4ozJp9F9T1VOuoenayVDKjguaHAqynZxWMqqbVp8AYJvTrpy9S2tXv1h4WaqmMzEdM2v6YmG6uOQamwk6mvsDAZk1JrI8Bq0Pycc/8I6w+jZt6LUp+k8CksPpjHos8dh+BHXiKbNbubZVs996ZZSM/OQXqaOzWRaGkriwJr76xAAmhJDE7ESeZTt5lvQQshJ4i9fD4L/s1sjbry9RffiqGdMcrUHCHgHL9BDaaKZY=
+  file_glob: true
+  file: target/snakemeter-*.jar
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: ybroeker/SnakeMeter
