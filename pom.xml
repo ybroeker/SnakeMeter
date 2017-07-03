@@ -4,7 +4,7 @@
     <groupId>de.natternstube</groupId>
     <artifactId>snakemeter</artifactId>
     <packaging>jar</packaging>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4</version>
     <name>snakemeter</name>
     <url>https://natternstube.de</url>
 
@@ -47,8 +47,6 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
-
-
             <!-- Maven Assembly Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -59,12 +57,14 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    <appendAssemblyId>false</appendAssemblyId>
                     <!-- MainClass in manifest make a executable jar -->
                     <archive>
                         <manifest>
                             <mainClass>de.natternstube.snakemeter.Controller</mainClass>
                         </manifest>
                     </archive>
+
 
                 </configuration>
                 <executions>
