@@ -4,7 +4,7 @@
     <groupId>de.natternstube</groupId>
     <artifactId>snakemeter</artifactId>
     <packaging>jar</packaging>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.5</version>
     <name>snakemeter</name>
     <url>https://natternstube.de</url>
 
