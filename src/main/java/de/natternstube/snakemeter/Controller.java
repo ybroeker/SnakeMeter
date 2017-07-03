@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class Controller implements ActionListener, MouseInputListener {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Controller controller = new Controller();
     }
 
@@ -56,7 +56,10 @@ public class Controller implements ActionListener, MouseInputListener {
 
         fc = initFileChooser();
 
-        initVersionCheck();
+
+        Thread t = new Thread(this::initVersionCheck);
+        t.setDaemon(true);
+        t.start();
     }
 
     /**
@@ -86,9 +89,10 @@ public class Controller implements ActionListener, MouseInputListener {
     public VersionCheck initVersionCheck() {
         VersionCheck versionCheck = new VersionCheck();
 
+
         boolean newerVersion = versionCheck.checkForNewerVersion();
         if (newerVersion) {
-            versionCheck.addNewVersionHint(window);
+            SwingUtilities.invokeLater(() -> versionCheck.addNewVersionHint(window));
         }
         return versionCheck;
     }
